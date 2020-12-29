@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const fs = require('fs')
 const nbt = require('prismarine-nbt')
 
@@ -38,7 +39,6 @@ function main(args, argsStr) {
     if (files.length == 2) return write(...files, getFmt())
   } else {
     if (!files.length) files = [args[0], args[0] + '.json']
-    // if (files.length == 1) files.push(files[0] + '.json')
     return read(files[0], files[1], getFmt())
   }
 
@@ -69,11 +69,11 @@ async function read(inpf, outf, fmt) {
   const buffer = await fs.promises.readFile(inpf)
   const { result, type } = await nbt.parse(buffer, fmt)
 
+  if (!fmt) console.log(`(as ${type} endian)`)
   if (outf) {
     const json = JSON.stringify(result, (k, v) => typeof v === 'bigint' ? v.toString() : v)
     fs.writeFileSync(outf, json)
   } else {
-    if (!fmt) console.log(`(as ${type} endian)`)
     console.log(nbt.simplify(result))
   }
 

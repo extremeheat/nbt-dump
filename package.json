@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Read and write Minecraft Named Binary Tag files in big, little and little-varint encoding",
   "main": "index.js",
-  "bin": "index.js",
+  "bin": {
+    "nbt-dump": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

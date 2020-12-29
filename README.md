@@ -4,6 +4,15 @@ A simple command line Node.js tool to read and write NBT files to JSON and back.
 
 Uses `prismarine-nbt` for serialization and deserialization, see https://github.com/PrismarineJS/prismarine-nbt for more info on schema.
 
+### Usage 
+
+via npx:
+`npx nbt-dump --help`
+
+via npm:
+`npm install -g nbt-dump`
+`nbt-dump --help`
+
 ```sh
 usage, feel free to use natural language:
 Parse an NBT file to JSON: 
