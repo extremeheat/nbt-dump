@@ -31,7 +31,7 @@ function main(args, argsStr) {
     if (args.includes('big')) return 'big'
     if (args.includes('varint')) return 'littleVarint'
     if (args.includes('little')) return 'little'
-    return ''
+    return undefined
   }
   if (args[0] == 'write') {
     if (!files.length && args[1]) files.push(args[1])
@@ -53,7 +53,7 @@ function write(inpf, outf, fmt) {
   const outBuffer = fs.createWriteStream(outf)
 
   try {
-    const newBuf = nbt.writeUncompressed(result, json)
+    const newBuf = nbt.writeUncompressed(json, fmt)
     outBuffer.write(newBuf)
     outBuffer.end(() => console.log('written!'))
   } catch (e) {
