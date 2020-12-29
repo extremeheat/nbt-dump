@@ -1,0 +1,33 @@
+{
+  "name": "nbt-dump",
+  "version": "1.0.0",
+  "description": "Read and write Minecraft Named Binary Tag files in big, little and little-varint encoding",
+  "main": "index.js",
+  "bin": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/extremeheat/nbt-dump.git"
+  },
+  "keywords": [
+    "minecraft",
+    "nbt",
+    "named",
+    "binary",
+    "tag",
+    "cli",
+    "bedrock"
+  ],
+  "author": "extremeheat",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/extremeheat/nbt-dump/issues"
+  },
+  "homepage": "https://github.com/extremeheat/nbt-dump#readme",
+  "dependencies": {
+    "prismarine-nbt": "github:extremeheat/prismarine-nbt#le",
+    "protodef": "github:extremeheat/node-protodef#new"
+  }
+}
