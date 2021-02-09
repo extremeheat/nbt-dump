@@ -67,14 +67,14 @@ async function read(inpf, outf, fmt) {
   console.log(`* Dumping NBT file "${inpf}" to "${outf || 'stdout'}" as JSON ${fmt ? 'as ' + fmt : ''}`)
 
   const buffer = await fs.promises.readFile(inpf)
-  const { result, type } = await nbt.parse(buffer, fmt)
+  const { parsed, type } = await nbt.parse(buffer, fmt)
 
   if (!fmt) console.log(`(as ${type} endian)`)
   if (outf) {
-    const json = JSON.stringify(result, (k, v) => typeof v === 'bigint' ? v.toString() : v)
+    const json = JSON.stringify(parsed, (k, v) => typeof v === 'bigint' ? v.toString() : v)
     fs.writeFileSync(outf, json)
   } else {
-    console.log(nbt.simplify(result))
+    console.log(nbt.simplify(parsed))
   }
 
   return true
