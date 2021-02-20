@@ -7,7 +7,7 @@
     "nbt-dump": "./index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "repository": {
     "type": "git",
@@ -29,7 +29,6 @@
   },
   "homepage": "https://github.com/extremeheat/nbt-dump#readme",
   "dependencies": {
-    "prismarine-nbt": "github:extremeheat/prismarine-nbt#le",
-    "protodef": "github:extremeheat/node-protodef#new"
+    "prismarine-nbt": "github:extremeheat/prismarine-nbt#le"
   }
 }
