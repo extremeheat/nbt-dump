@@ -29,6 +29,6 @@
   },
   "homepage": "https://github.com/extremeheat/nbt-dump#readme",
   "dependencies": {
-    "prismarine-nbt": "github:extremeheat/prismarine-nbt#le"
+    "prismarine-nbt": "^1.5.0"
   }
 }
