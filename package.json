@@ -4,7 +4,7 @@
   "description": "Read and write Minecraft Named Binary Tag files in big, little and little-varint encoding",
   "main": "lib.js",
   "bin": {
-    "nbt-dump": "./index.js"
+    "nbt-dump": "./cli.js"
   },
   "scripts": {
     "lint": "standard",
