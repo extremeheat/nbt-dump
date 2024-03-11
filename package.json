@@ -2,12 +2,15 @@
   "name": "nbt-dump",
   "version": "1.0.2",
   "description": "Read and write Minecraft Named Binary Tag files in big, little and little-varint encoding",
-  "main": "index.js",
+  "main": "lib.js",
   "bin": {
     "nbt-dump": "./index.js"
   },
   "scripts": {
-    "test": "node test.js"
+    "lint": "standard",
+    "fix": "standard --fix",
+    "pretest": "npm run lint",
+    "test": "mocha --bail --exit"
   },
   "repository": {
     "type": "git",
@@ -30,5 +33,10 @@
   "homepage": "https://github.com/extremeheat/nbt-dump#readme",
   "dependencies": {
     "prismarine-nbt": "^2.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.3.0",
+    "standard": "^17.1.0",
+    "nbt-dump": "file:."
   }
 }
