@@ -15,15 +15,22 @@ Write an JSON file to uncompressed NBT (defaults to big endian):
 
     nbt-dump write level.json to level.dat
     nbt-dump write level.json to level.dat as little
+
+You can also pipe the input to nbt-dump:
+    cat level.dat | nbt-dump
+    cat level.dat | nbt-dump to level.json
+    cat level.json | nbt-dump write
+    cat level.json | nbt-dump write to level.dat
 `
 
-function main(args, argsStr) {
-  if (args.length == 0 || argsStr.includes('help')) {
+async function main(args, argsStr) {
+  if ((args.length == 0 || argsStr.includes('help')) && !!process.stdin.isTTY) {
     console.warn(usage)
     process.exit(1)
   }
   if (args[0] == 'read') args.shift()
   let files = []
+  if (!process.stdin.isTTY) files.push(undefined)
   for (var arg of args) {
     if (arg.includes('.')) files.push(arg)
   }
@@ -35,8 +42,8 @@ function main(args, argsStr) {
   }
   if (args[0] == 'write') {
     if (!files.length && args[1]) files.push(args[1])
-    if (files.length == 1) files.push(files[0] + '.nbt')
-    if (files.length == 2) return write(...files, getFmt())
+    if (files.length == 1) files.push(files[0] || 'stdin' + '.nbt')
+    if (files.length == 2) return (await write(...files, getFmt()))
   } else {
     if (!files.length) files = [args[0], args[0] + '.json']
     return read(files[0], files[1], getFmt())
@@ -46,10 +53,17 @@ function main(args, argsStr) {
   console.warn(arguments)
 }
 
-function write(inpf, outf, fmt) {
-  console.log(`* Writing JSON from "${inpf}" to "${outf}" as ${fmt || 'big'} endian`)
+async function write(inpf, outf, fmt) {
+  console.log(`* Writing JSON from "${inpf || 'stdin'}" to "${outf}" as ${fmt || 'big'} endian`)
 
-  const json = JSON.parse(fs.readFileSync(inpf))
+  let json;
+  if (!inpf) {
+    const chunks = []
+    for await (const chunk of process.stdin) chunks.push(chunk);
+    json = JSON.parse(Buffer.concat(chunks).toString())
+  } else {
+    json = JSON.parse(fs.readFileSync(inpf))
+  }
   const outBuffer = fs.createWriteStream(outf)
 
   try {
@@ -64,9 +78,16 @@ function write(inpf, outf, fmt) {
 }
 
 async function read(inpf, outf, fmt) {
-  console.log(`* Dumping NBT file "${inpf}" to "${outf || 'stdout'}" as JSON ${fmt ? 'as ' + fmt : ''}`)
+  console.log(`* Dumping NBT ${inpf ? 'file "' + inpf + '"' : '"stdin"'} to "${outf || 'stdout'}" as JSON ${fmt ? 'as ' + fmt : ''}`)
 
-  const buffer = await fs.promises.readFile(inpf)
+  let buffer;
+  if (!inpf) {
+    const chunks = []
+    for await (const chunk of process.stdin) chunks.push(chunk);
+    buffer = Buffer.concat(chunks)
+  } else {
+    buffer = await fs.promises.readFile(inpf)
+  }
   const { parsed, type } = await nbt.parse(buffer, fmt)
 
   if (!fmt) console.log(`(as ${type} endian)`)
