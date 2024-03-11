@@ -24,7 +24,7 @@ You can also pipe the input to nbt-dump:
 
 async function isPipedInput (fd = 0) {
   return new Promise((resolve, reject) => {
-    fs.fstat(0, function (err, stats) {
+    fs.fstat(fd, function (err, stats) {
       if (err) {
         reject(err)
       } else {
