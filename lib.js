@@ -22,7 +22,7 @@ You can also pipe the input to nbt-dump:
     cat level.json | nbt-dump write to level.dat
 `
 
-async function isPipedInput () {
+async function isPipedInput (fd = 0) {
   return new Promise((resolve, reject) => {
     fs.fstat(0, function (err, stats) {
       if (err) {
@@ -44,6 +44,7 @@ async function main (args, argsStr) {
   if (!process.stdin.isTTY && await isPipedInput()) {
     files.push(undefined)
   }
+  console.log('files', files, !process.stdin.isTTY, await isPipedInput(0), await isPipedInput(1))
   for (const arg of args) {
     if (arg.includes('.')) files.push(arg)
   }
