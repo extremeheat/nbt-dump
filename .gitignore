@@ -1,7 +1,7 @@
 node_modules/
 package-lock.json
-*.nbt
-*.dat
-*.json
 !package.json
 yarn.lock
+
+# Generated test output
+test/bigtest.json
