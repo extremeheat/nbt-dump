@@ -22,6 +22,18 @@ You can also pipe the input to nbt-dump:
     cat level.json | nbt-dump write to level.dat
 `
 
+async function isPipedInput () {
+  return new Promise((resolve, reject) => {
+    fs.fstat(0, function (err, stats) {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(stats.isFIFO())
+      }
+    })
+  })
+}
+
 async function main (args, argsStr) {
   if ((args.length === 0 || argsStr.includes('help')) && !!process.stdin.isTTY) {
     console.warn(usage)
@@ -29,11 +41,12 @@ async function main (args, argsStr) {
   }
   if (args[0] === 'read') args.shift()
   let files = []
-  if (!process.stdin.isTTY) files.push(undefined)
+  if (!process.stdin.isTTY && await isPipedInput()) {
+    files.push(undefined)
+  }
   for (const arg of args) {
     if (arg.includes('.')) files.push(arg)
   }
-  console.log('files', files)
   const getFmt = () => {
     if (args.includes('big')) return 'big'
     if (args.includes('varint')) return 'littleVarint'
