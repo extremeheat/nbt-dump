@@ -33,6 +33,7 @@ async function main (args, argsStr) {
   for (const arg of args) {
     if (arg.includes('.')) files.push(arg)
   }
+  console.log('files', files)
   const getFmt = () => {
     if (args.includes('big')) return 'big'
     if (args.includes('varint')) return 'littleVarint'
