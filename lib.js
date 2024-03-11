@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 const fs = require('fs')
 const nbt = require('prismarine-nbt')
 
@@ -23,15 +22,29 @@ You can also pipe the input to nbt-dump:
     cat level.json | nbt-dump write to level.dat
 `
 
-async function main(args, argsStr) {
-  if ((args.length == 0 || argsStr.includes('help')) && !!process.stdin.isTTY) {
+// async function isPipedInput (fd = 0) {
+//   return new Promise((resolve, reject) => {
+//     fs.fstat(fd, function (err, stats) {
+//       if (err) {
+//         reject(err)
+//       } else {
+//         resolve(stats.isFIFO())
+//       }
+//     })
+//   })
+// }
+
+async function main (args, argsStr) {
+  if ((args.length === 0 || argsStr.includes('help')) && !!process.stdin.isTTY) {
     console.warn(usage)
     process.exit(1)
   }
-  if (args[0] == 'read') args.shift()
+  if (args[0] === 'read') args.shift()
   let files = []
-  if (!process.stdin.isTTY) files.push(undefined)
-  for (var arg of args) {
+  if (!process.stdin.isTTY && !process.env.CI) {
+    files.push(undefined)
+  }
+  for (const arg of args) {
     if (arg.includes('.')) files.push(arg)
   }
   const getFmt = () => {
@@ -40,10 +53,10 @@ async function main(args, argsStr) {
     if (args.includes('little')) return 'little'
     return undefined
   }
-  if (args[0] == 'write') {
+  if (args[0] === 'write') {
     if (!files.length && args[1]) files.push(args[1])
-    if (files.length == 1) files.push(files[0] || 'stdin' + '.nbt')
-    if (files.length == 2) return (await write(...files, getFmt()))
+    if (files.length === 1) files.push(files[0] || 'stdin' + '.nbt')
+    if (files.length === 2) return (await write(...files, getFmt()))
   } else {
     if (!files.length) files = [args[0], args[0] + '.json']
     return read(files[0], files[1], getFmt())
@@ -53,13 +66,13 @@ async function main(args, argsStr) {
   console.warn(arguments)
 }
 
-async function write(inpf, outf, fmt) {
+async function write (inpf, outf, fmt) {
   console.log(`* Writing JSON from "${inpf || 'stdin'}" to "${outf}" as ${fmt || 'big'} endian`)
 
-  let json;
+  let json
   if (!inpf) {
     const chunks = []
-    for await (const chunk of process.stdin) chunks.push(chunk);
+    for await (const chunk of process.stdin) chunks.push(chunk)
     json = JSON.parse(Buffer.concat(chunks).toString())
   } else {
     json = JSON.parse(fs.readFileSync(inpf))
@@ -74,16 +87,15 @@ async function write(inpf, outf, fmt) {
     console.warn('Failed to write. Make sure that the JSON schema matches the prismarine-nbt ProtoDef schema. See https://github.com/PrismarineJS/prismarine-nbt')
     throw e
   }
-  return
 }
 
-async function read(inpf, outf, fmt) {
+async function read (inpf, outf, fmt) {
   console.log(`* Dumping NBT ${inpf ? 'file "' + inpf + '"' : '"stdin"'} to "${outf || 'stdout'}" as JSON ${fmt ? 'as ' + fmt : ''}`)
 
-  let buffer;
+  let buffer
   if (!inpf) {
     const chunks = []
-    for await (const chunk of process.stdin) chunks.push(chunk);
+    for await (const chunk of process.stdin) chunks.push(chunk)
     buffer = Buffer.concat(chunks)
   } else {
     buffer = await fs.promises.readFile(inpf)
@@ -101,5 +113,4 @@ async function read(inpf, outf, fmt) {
   return true
 }
 
-const args = process.argv.slice(2)
-main(args, args.join(' '))
+module.exports = { main, write, read }
