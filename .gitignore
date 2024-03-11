@@ -4,3 +4,4 @@ package-lock.json
 *.dat
 *.json
 !package.json
+yarn.lock
