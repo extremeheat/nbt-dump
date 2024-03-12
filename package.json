@@ -1,6 +1,6 @@
 {
   "name": "nbt-dump",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Read and write Minecraft Named Binary Tag files in big, little and little-varint encoding",
   "main": "lib.js",
   "bin": {
